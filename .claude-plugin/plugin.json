@@ -1,0 +1,13 @@
+{
+  "name": "inspiro",
+  "version": "1.0.0",
+  "description": "Build AI applications with real-time web data using Inspiro's search, extract, crawl, and research APIs.",
+  "author": {
+    "name": "me"
+  },
+  "homepage": "https://api.inspiro.top",
+  "repository": "https://github.com/inspiro-ai/skills",
+  "license": "MIT",
+  "keywords": ["search", "web-search", "rag", "agents", "llm", "research", "crawl", "extract"],
+  "skills": "./skills/"
+}

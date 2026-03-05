@@ -1,0 +1,27 @@
+{
+  "name": "inspiro-plugins",
+  "owner": {
+    "name": "me"
+  },
+  "metadata": {
+    "description": "Official Inspiro plugin for Claude Code - web search, research, and crawling capabilities",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "inspiro",
+      "source": "./",
+      "description": "Build AI applications with real-time web data using Inspiro's search, extract, crawl, and research APIs.",
+      "version": "1.0.0",
+      "author": {
+        "name": "me"
+      },
+      "homepage": "https://github.com/inspiro-ai/skills",
+      "repository": "https://github.com/inspiro-ai/skills",
+      "license": "MIT",
+      "keywords": ["search", "web-search", "rag", "agents", "llm", "research", "crawl", "extract"],
+      "category": "external-integrations",
+      "tags": ["web-search", "data-retrieval", "agents", "rag", "research"]
+    }
+  ]
+}
