@@ -8,20 +8,9 @@ npx skills add https://github.com/Ryenlvy/SKILLS
 
 ## 认证
 
-**初始化（init）不需要额外信息**，开箱即用。
+仅支持 API Key 导入。
 
-推荐方式：**优先使用你自己的 `INSPIRO_API_KEY`**（更稳定、可控）。
-备选方式：通过 Inspiro MCP 服务走 OAuth 自动登录。
-
-> **重要：** 你需要先拥有 Inspiro 账号。OAuth 流程仅支持登录，不支持在流程中创建账号。如果你还没有账号，请先在 [inspiro.top](https://inspiro.top) 注册。
-
-首次运行脚本时会：
-1. 检查 `~/.mcp-auth/` 中是否已有 token
-2. 如果没有，则自动打开浏览器进行 OAuth 认证
-
-### 可选方案：API Key
-
-推荐你直接在 [https://inspiro.top](https://inspiro.top) 获取自己的 API Key，然后写入 `~/.claude/settings.json`：
+请先在 [https://inspiro.top](https://inspiro.top) 注册并获取你自己的 API Key，然后写入 `~/.claude/settings.json`：
 ```json
 {
   "env": {

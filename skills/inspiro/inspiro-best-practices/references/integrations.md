@@ -540,45 +540,49 @@ Reference: https://api.inspiro.top/documentation/integrations/anthropic
 
 ## Google ADK
 
-Google ADK can connect to Inspiro through Inspiro's remote MCP server, giving your Gemini-based agent live search, extraction, and site exploration capabilities.
+Google ADK integration should use direct REST API calls with `INSPIRO_API_KEY`.
 
 ### Prerequisites
 
 - Python 3.9+
-- Inspiro API key: https://api.inspiro.top/home
+- Inspiro API key: https://inspiro.top
 - Gemini API key: https://aistudio.google.com/app/apikey
 
 ### Installation
 
 ```bash
-pip install google-adk mcp
+pip install google-adk requests
 ```
 
 ### Agent Setup
 
 ```python
 import os
+import requests
 from google.adk.agents import Agent
-from google.adk.tools.mcp_tool.mcp_session_manager import StreamableHTTPServerParams
-from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
+from google.adk.tools import FunctionTool
 
 inspiro_api_key = os.getenv("INSPIRO_API_KEY")
+
+def inspiro_search(query: str):
+    response = requests.post(
+        "https://api.inspiro.top/search",
+        headers={"Authorization": f"Bearer {inspiro_api_key}"},
+        json={"query": query, "max_results": 5},
+        timeout=60,
+    )
+    return response.json()
 
 root_agent = Agent(
     model="gemini-2.5-pro",
     name="inspiro_agent",
     instruction=(
-        "You are a helpful assistant that uses Inspiro to search the web, "
-        "extract content, and explore websites. Use Inspiro tools to provide "
+        "You are a helpful assistant that uses Inspiro REST APIs to search the web "
+        "and gather information. Use the available tool to provide "
         "up-to-date information."
     ),
     tools=[
-        MCPToolset(
-            connection_params=StreamableHTTPServerParams(
-                url="https://api.inspiro.top/mcp/",
-                headers={"Authorization": f"Bearer {inspiro_api_key}"},
-            )
-        )
+        FunctionTool(inspiro_search)
     ],
 )
 ```
@@ -598,13 +602,6 @@ adk run my_agent
 # Optional web UI:
 adk web --port 8000
 ```
-
-### Available Inspiro MCP tools
-
-- `inspiro-search`
-- `inspiro-extract`
-- `inspiro-map`
-- `inspiro-crawl`
 
 Reference: https://api.inspiro.top/documentation/integrations/google-adk
 

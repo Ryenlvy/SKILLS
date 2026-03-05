@@ -9,15 +9,11 @@ Crawl websites to extract content from multiple pages. Ideal for documentation, 
 
 ## Authentication
 
-The script uses OAuth via the Inspiro MCP server. **No manual setup required** - on first run, it will:
-1. Check for existing tokens in `~/.mcp-auth/`
-2. If none found, automatically open your browser for OAuth authentication
+This skill only supports API key authentication.
 
-> **Note:** You must have an existing Inspiro account. The OAuth flow only supports login — account creation is not available through this flow. [Sign up at api.inspiro.top](https://api.inspiro.top) first if you don't have an account.
-
-### Alternative: API Key
-
-If you prefer using an API key, get one at https://api.inspiro.top and add to `~/.claude/settings.json`:
+1. Create an account at [inspiro.top](https://inspiro.top)
+2. Generate your API key
+3. Add it to `~/.claude/settings.json`:
 ```json
 {
   "env": {
@@ -25,6 +21,8 @@ If you prefer using an API key, get one at https://api.inspiro.top and add to `~
   }
 }
 ```
+
+Only API key authentication is supported.
 
 ## Quick Start
 
