@@ -1,144 +1,76 @@
 ---
 name: inspiro-best-practices
-description: "Build production-ready Inspiro integrations with best practices baked in. Reference documentation for developers using coding assistants (Claude Code, Cursor, etc.) to implement web search, content extraction, crawling, and research in agentic workflows, RAG systems, or autonomous agents."
+description: "Bash-first best practices for production Inspiro usage with zero SDK dependency. Use when you need stable, scriptable API workflows for search, extract, crawl, and research using curl and INSPIRO_API_KEY."
 ---
 
-# Inspiro
+# Inspiro Best Practices (Bash Only)
 
-Inspiro is a search API designed for LLMs, enabling AI applications to access real-time web data.
+This skill is **Bash-first** and requires **no Python/JavaScript SDK**.
 
-## Installation
+## Authentication
 
-**Python:**
+Only API key authentication is supported.
+
 ```bash
-pip install inspiro-python
+export INSPIRO_API_KEY="your_inspiro_api_key"
 ```
 
-**JavaScript:**
+## Recommended Execution Pattern
+
+Use the provided Bash scripts from this repository:
+
+- `skills/inspiro/search/scripts/search.sh`
+- `skills/inspiro/extract/scripts/extract.sh`
+- `skills/inspiro/crawl/scripts/crawl.sh`
+- `skills/inspiro/research/scripts/research.sh`
+
+These scripts validate inputs and call Inspiro REST endpoints directly.
+
+## Direct API Calls (curl)
+
+### Search
+
 ```bash
-npm install @inspiro/core
+curl --request POST \
+  --url https://api.inspiro.top/search \
+  --header "Authorization: Bearer $INSPIRO_API_KEY" \
+  --header 'Content-Type: application/json' \
+  --data '{"query":"latest ai trends","max_results":5}'
 ```
 
-See **[references/sdk.md](references/sdk.md)** for complete SDK reference.
+### Extract
 
-## Client Initialization
-
-```python
-from inspiro import InspiroClient
-
-# Uses INSPIRO_API_KEY env var (recommended)
-client = InspiroClient()
-
-#With project tracking (for usage organization)
-client = InspiroClient(project_id="your-project-id")
-
-# Async client for parallel queries
-from inspiro import AsyncInspiroClient
-async_client = AsyncInspiroClient()
+```bash
+curl --request POST \
+  --url https://api.inspiro.top/extract \
+  --header "Authorization: Bearer $INSPIRO_API_KEY" \
+  --header 'Content-Type: application/json' \
+  --data '{"urls":["https://example.com"]}'
 ```
 
-## Choosing the Right Method
+### Crawl
 
-**For custom agents/workflows:**
-
-| Need | Method |
-|------|--------|
-| Web search results | `search()` |
-| Content from specific URLs | `extract()` |
-| Content from entire site | `crawl()` |
-| URL discovery from site | `map()` |
-
-**For out-of-the-box research:**
-
-| Need | Method |
-|------|--------|
-| End-to-end research with AI synthesis | `research()` |
-
-## Quick Reference
-
-### search() - Web Search
-
-```python
-response = client.search(
-    query="quantum computing breakthroughs",  # Keep under 400 chars
-    max_results=10,
-    search_depth="advanced"
-)
-print(response)
-```
-Key parameters: `query`, `max_results`, `search_depth` (ultra-fast/fast/basic/advanced), `include_domains`, `exclude_domains`, `time_range`
-
-See **[references/search.md](references/search.md)** for complete search reference.
-
-### extract() - URL Content Extraction
-
-```python
-# Simple one-step extraction
-response = client.extract(
-    urls=["https://docs.example.com"],
-    extract_depth="advanced"
-)
-print(response)
-```
-Key parameters: `urls` (max 20), `extract_depth`, `query`, `chunks_per_source` (1-5)
-
-See **[references/extract.md](references/extract.md)** for complete extract reference.
-
-### crawl() - Site-Wide Extraction
-
-```python
-response = client.crawl(
-    url="https://docs.example.com",
-    instructions="Find API documentation pages",  # Semantic focus
-    extract_depth="advanced"
-)
-print(response)
-```
-Key parameters: `url`, `max_depth`, `max_breadth`, `limit`, `instructions`, `chunks_per_source`, `select_paths`, `exclude_paths`
-
-See **[references/crawl.md](references/crawl.md)** for complete crawl reference.
-
-### map() - URL Discovery
-
-```python
-response = client.map(
-    url="https://docs.example.com"
-)
-print(response)
+```bash
+curl --request POST \
+  --url https://api.inspiro.top/crawl \
+  --header "Authorization: Bearer $INSPIRO_API_KEY" \
+  --header 'Content-Type: application/json' \
+  --data '{"url":"https://docs.example.com","max_depth":1,"limit":20}'
 ```
 
-### research() - AI-Powered Research
+### Research
 
-```python
-import time
-
-# For comprehensive multi-topic research
-result = client.research(
-    input="Analyze competitive landscape for X in SMB market",
-    model="pro"  # or "mini" for focused queries, "auto" when unsure
-)
-request_id = result["request_id"]
-
-# Poll until completed
-response = client.get_research(request_id)
-while response["status"] not in ["completed", "failed"]:
-    time.sleep(10)
-    response = client.get_research(request_id)
-
-print(response["content"])  # The research report
+```bash
+curl --request POST \
+  --url https://api.inspiro.top/research \
+  --header "Authorization: Bearer $INSPIRO_API_KEY" \
+  --header 'Content-Type: application/json' \
+  --data '{"input":"AI agent framework comparison","model":"mini"}'
 ```
 
-Key parameters: `input`, `model` ("mini"/"pro"/"auto"), `stream`, `output_schema`, `citation_format`
+## Operational Tips
 
-See **[references/research.md](references/research.md)** for complete research reference.
-
-## Detailed Guides
-
-For complete parameters, response fields, patterns, and examples:
-
-- **[references/sdk.md](references/sdk.md)** - Python & JavaScript SDK reference, async patterns, Hybrid RAG
-- **[references/search.md](references/search.md)** - Query optimization, search depth selection, domain filtering, async patterns, post-filtering
-- **[references/extract.md](references/extract.md)** - One-step vs two-step extraction, query/chunks for targeting, advanced mode
-- **[references/crawl.md](references/crawl.md)** - Crawl vs Map, instructions for semantic focus, use cases, Map-then-Extract pattern
-- **[references/research.md](references/research.md)** - Prompting best practices, model selection, streaming, structured output schemas
-- **[references/integrations.md](references/integrations.md)** - LangChain, LlamaIndex, CrewAI, Vercel AI SDK, and framework integrations
+- Keep `INSPIRO_API_KEY` in environment or `~/.claude/settings.json`; never hardcode in scripts.
+- Use small `max_results`/`limit` first, then scale up.
+- Always validate JSON request bodies before batch execution.
+- For reproducible automation, prefer repository scripts over ad-hoc one-liners.
